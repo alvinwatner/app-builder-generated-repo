@@ -1,7 +1,7 @@
 {
   "package_name": "com.creative.dory",
-  "project_description": "A Flutter project using the Stacked architecture, featuring routing, dependency injection, and dialog/bottom sheet management.",
-  "architecture_overview": "The application follows the Stacked architecture with separate folders for app setup, features, UI components, and utilities. It uses Stacked for state management, routing, and dependency injection.",
+  "project_description": "The Flutter application follows the Stacked architecture and provides features such as routing, dependency injection, and management of dialogs and bottom sheets. The main functionality includes a home view with a counter and the ability to display custom dialogs and bottom sheets. Additionally, the application has a startup view that handles initialization logic.",
+  "architecture_overview": "The application's architecture is based on the Stacked pattern, which separates concerns into different layers. The main components include ViewModels (e.g., HomeViewModel, StartupViewModel) that handle business logic and state management, Views (e.g., HomeView, StartupView) that represent the UI, and various services (e.g., DialogService, BottomSheetService, NavigationService) that manage cross-cutting concerns. The project structure follows the feature-based approach, with separate directories for app setup, features, UI components, and utilities.",
   "files": [
     {
       "name": "lib/app/app.dart",
@@ -113,6 +113,440 @@
         "package:my_app/app/app.locator.dart",
         "package:my_app/features/app/app_view.dart"
       ]
+    },
+    {
+      "name": "lib/ui/dialogs/info_alert/info_alert_dialog_model.dart",
+      "description": "This Dart file defines the `InfoAlertDialogModel` class, which is responsible for managing the state and behavior of an information alert dialog in a Flutter application.",
+      "class_diagram": "@startuml\nclass InfoAlertDialogModel {\n}\nInfoAlertDialogModel -up-|> BaseViewModel\n@enduml",
+      "methods": [
+        {
+          "name": "",
+          "description": "The `InfoAlertDialogModel` class inherits from `BaseViewModel`, which is part of the `stacked` package. It does not define any additional methods, as it is a simple class intended to serve as a view model for the information alert dialog.",
+          "parameters": null,
+          "return_type": null
+        }
+      ],
+      "dependencies": [
+        "package:stacked/stacked.dart"
+      ]
+    },
+    {
+      "name": "lib/app/app.locator.dart",
+      "description": "This file is responsible for setting up and configuring the service locator for the Flutter application. The service locator is a central registry that allows different parts of the application to access and share dependencies, such as services, repositories, and other utility classes.",
+      "class_diagram": "",
+      "methods": [
+        {
+          "name": "setupLocator",
+          "description": "This method is responsible for registering the necessary dependencies with the service locator. It sets up the environment and registers the BottomSheetService, DialogService, and NavigationService as singletons.",
+          "parameters": [
+            "environment",
+            "environmentFilter"
+          ],
+          "return_type": "Future<void>"
+        }
+      ],
+      "dependencies": [
+        "stacked_services/src/bottom_sheet/bottom_sheet_service.dart",
+        "stacked_services/src/dialog/dialog_service.dart",
+        "stacked_services/src/navigation/navigation_service.dart",
+        "stacked_shared/stacked_shared.dart"
+      ]
+    },
+    {
+      "name": "lib/ui/bottom_sheets/notice/notice_sheet.dart",
+      "description": "The `NoticeSheet` class is responsible for displaying a bottom sheet that shows a notice to the user. It provides a simple and consistent way to present important information or alerts to the user in the context of the application.",
+      "class_diagram": "@startuml\nclass NoticeSheet {\n  + NoticeSheet({required this.completer, required this.request})\n  + Widget builder(BuildContext context, NoticeSheetModel viewModel, Widget? child)\n  + NoticeSheetModel viewModelBuilder(BuildContext context)\n}\n\nclass NoticeSheetModel {\n}\n\nNoticeSheet o-- NoticeSheetModel\nNoticeSheet +-- SheetRequest\nNoticeSheet +-- SheetResponse\n@enduml",
+      "methods": [
+        {
+          "name": "builder",
+          "description": "Builds the UI for the notice bottom sheet, displaying the title and description provided in the `SheetRequest`.",
+          "parameters": [
+            "BuildContext context",
+            "NoticeSheetModel viewModel",
+            "Widget? child"
+          ],
+          "return_type": "Widget"
+        },
+        {
+          "name": "viewModelBuilder",
+          "description": "Creates an instance of the `NoticeSheetModel` to handle the logic and state for the notice bottom sheet.",
+          "parameters": [
+            "BuildContext context"
+          ],
+          "return_type": "NoticeSheetModel"
+        }
+      ],
+      "dependencies": [
+        "package:flutter/material.dart",
+        "package:stacked/stacked.dart",
+        "package:stacked_services/stacked_services.dart",
+        "package:dory/ui/bottom_sheets/notice/notice_sheet_model.dart",
+        "package:dory/ui/common/app_colors.dart",
+        "package:dory/ui/common/ui_helpers.dart"
+      ]
+    },
+    {
+      "name": "lib/ui/bottom_sheets/notice/notice_sheet_model.dart",
+      "description": "This file defines the `NoticeSheetModel` class, which is responsible for managing the state and behavior of the notice bottom sheet UI component in the application.",
+      "class_diagram": "@startuml\n  class NoticeSheetModel extends BaseViewModel {\n  }\n  @enduml",
+      "methods": [],
+      "dependencies": [
+        "package:stacked/stacked.dart"
+      ]
+    },
+    {
+      "name": "lib/app/app.bottomsheets.dart",
+      "description": "This file is responsible for setting up and managing the bottom sheet UI in the application. It defines the available bottom sheet types, provides a central setup function to register custom bottom sheet builders, and integrates with the Stacked services library to handle the bottom sheet functionality.",
+      "class_diagram": "@startuml\n  class BottomSheetType {\n    + notice\n  }\n\n  class SetupBottomSheetUi {\n    + setupBottomSheetUi()\n  }\n\n  BottomSheetType -right-> NoticeSheet\n  SetupBottomSheetUi -right-> BottomSheetService\n@enduml",
+      "methods": [
+        {
+          "name": "setupBottomSheetUi",
+          "description": "This method is responsible for setting up the bottom sheet UI. It configures the BottomSheetService with custom builders for each BottomSheetType, allowing the application to display different bottom sheet types as needed.",
+          "parameters": null,
+          "return_type": "void"
+        }
+      ],
+      "dependencies": [
+        "stacked_services/stacked_services.dart",
+        "app.locator.dart",
+        "ui/bottom_sheets/notice/notice_sheet.dart"
+      ]
+    },
+    {
+      "name": "lib/app/app_theme.dart",
+      "description": "This file defines the application's theme and visual styling, including the color scheme, typography, and UI element styles. It provides a consistent and branded look and feel for the Flutter application.",
+      "class_diagram": "@startuml\nclass AppTheme {\n  +static ThemeData lightTheme\n  +static ThemeData darkTheme\n}\n@enduml",
+      "methods": [
+        {
+          "name": "lightTheme",
+          "description": "Defines the light theme for the application, including the color palette, typography, and UI element styles.",
+          "parameters": null,
+          "return_type": "ThemeData"
+        },
+        {
+          "name": "darkTheme",
+          "description": "Defines the dark theme for the application, including the color palette, typography, and UI element styles.",
+          "parameters": null,
+          "return_type": "ThemeData"
+        }
+      ],
+      "dependencies": [
+        "package:flutter/material.dart",
+        "dory/ui/common/app_colors.dart"
+      ]
+    },
+    {
+      "name": "lib/features/app/app_viewmodel.dart",
+      "description": "The AppViewModel class is a ViewModel in the MVVM (Model-View-ViewModel) architectural pattern used in the Flutter application. It is responsible for managing the state and behavior of the app's main UI, which is typically the app's entry point or root screen.",
+      "class_diagram": "@startuml\nclass AppViewModel {\n  +void initialize()\n  +void dispose()\n}\n\nclass BaseViewModel {\n  +void notifyListeners()\n  +void setBusy(bool value)\n}\n\nAppViewModel -up-|> BaseViewModel\n@enduml",
+      "methods": [
+        {
+          "name": "initialize",
+          "description": "Initializes the ViewModel, performing any necessary setup or loading of data required for the app's main screen.",
+          "parameters": null,
+          "return_type": "void"
+        },
+        {
+          "name": "dispose",
+          "description": "Cleans up any resources or subscriptions managed by the ViewModel when the app is being closed or the ViewModel is no longer needed.",
+          "parameters": null,
+          "return_type": "void"
+        }
+      ],
+      "dependencies": [
+        "package:stacked/stacked.dart"
+      ]
+    },
+    {
+      "name": "lib/ui/dialogs/info_alert/info_alert_dialog.dart",
+      "description": "This file defines the `InfoAlertDialog` class, which is responsible for displaying an information alert dialog in the Flutter application. The dialog provides a simple way to display important information to the user, with a title, description, and a 'Got it' button to acknowledge and dismiss the alert.",
+      "class_diagram": "@startuml\nclass InfoAlertDialog {\n  + InfoAlertDialog(request, completer)\n  + builder(context, viewModel, child): Widget\n  + viewModelBuilder(context): InfoAlertDialogModel\n}\n\nclass InfoAlertDialogModel {\n}\n\nDialogRequest <-- InfoAlertDialog\nDialogResponse <-- InfoAlertDialog\n@enduml",
+      "methods": [
+        {
+          "name": "InfoAlertDialog",
+          "description": "The constructor for the `InfoAlertDialog` class, which takes in a `DialogRequest` and a `completer` function as parameters. The `DialogRequest` contains the title and description to be displayed in the dialog, and the `completer` function is called when the user dismisses the dialog.",
+          "parameters": [
+            "request",
+            "completer"
+          ],
+          "return_type": null
+        },
+        {
+          "name": "builder",
+          "description": "The `builder` method is responsible for constructing the UI of the `InfoAlertDialog`. It takes in the current `BuildContext`, the `InfoAlertDialogModel` view model, and an optional `child` widget as parameters. The method returns a `Widget` that represents the dialog.",
+          "parameters": [
+            "context",
+            "viewModel",
+            "child"
+          ],
+          "return_type": "Widget"
+        },
+        {
+          "name": "viewModelBuilder",
+          "description": "The `viewModelBuilder` method is responsible for creating an instance of the `InfoAlertDialogModel` class, which is used by the `builder` method to manage the state and logic of the dialog.",
+          "parameters": [
+            "context"
+          ],
+          "return_type": "InfoAlertDialogModel"
+        }
+      ],
+      "dependencies": [
+        "package:flutter/material.dart",
+        "package:stacked/stacked.dart",
+        "package:stacked_services/stacked_services.dart",
+        "package:dory/ui/common/app_colors.dart",
+        "package:dory/ui/common/ui_helpers.dart",
+        "package:dory/ui/dialogs/info_alert/info_alert_dialog_model.dart"
+      ]
+    },
+    {
+      "name": "lib/app/app.dialogs.dart",
+      "description": "This file is responsible for setting up the dialog management system for the application. It defines the available dialog types and registers custom dialog builders with the DialogService from the 'stacked_services' package.",
+      "class_diagram": "@startuml\n\ninterface DialogService {\n  registerCustomDialogBuilders(Map<DialogType, DialogBuilder>)\n}\n\nenum DialogType {\n  infoAlert\n}\n\nclass InfoAlertDialog {\n  + InfoAlertDialog(request: DialogRequest, completer: DialogCompleter)\n}\n\nDialogService -u-> DialogType\nDialogService *--> InfoAlertDialog : registers\n\n@enduml",
+      "methods": [
+        {
+          "name": "setupDialogUi",
+          "description": "Registers the custom dialog builders with the DialogService, allowing the application to display various dialog types.",
+          "parameters": [
+            "none"
+          ],
+          "return_type": "void"
+        }
+      ],
+      "dependencies": [
+        "stacked_services",
+        "app.locator",
+        "../ui/dialogs/info_alert/info_alert_dialog.dart"
+      ]
+    },
+    {
+      "name": "lib/ui/common/app_colors.dart",
+      "description": "This Dart file defines a set of constant color values that are used throughout the application's user interface. It provides a centralized location to manage and apply a consistent color palette, improving the visual coherence and branding of the app.",
+      "class_diagram": "",
+      "methods": [],
+      "dependencies": [
+        "package:flutter/material.dart"
+      ]
+    },
+    {
+      "name": "lib/ui/widgets/theme_toggle_button.dart",
+      "description": "The `ThemeToggleButton` file provides a reusable widget that allows users to easily switch between different theme modes (light, dark, system default, time-based) in the application. This widget is a crucial component for enhancing the user experience by enabling users to customize the app's visual appearance to their preference.",
+      "class_diagram": "@startuml\nclass ThemeToggleButton {\n  +build(context: BuildContext): Widget\n}\n\nclass ThemeToggleViewModel {\n  +isDarkMode: bool\n  +onThemeOptionSelected(value: String): void\n}\n\nThemeToggleButton --> ThemeToggleViewModel\nThemeToggleViewModel --> ThemeService\n@enduml",
+      "methods": [
+        {
+          "name": "build",
+          "description": "Builds the `ThemeToggleButton` widget, which displays a popup menu with options to switch between different theme modes.",
+          "parameters": [
+            "context: BuildContext"
+          ],
+          "return_type": "Widget"
+        },
+        {
+          "name": "isDarkMode",
+          "description": "Retrieves the current theme mode (dark or light) from the `ThemeService`.",
+          "parameters": null,
+          "return_type": "bool"
+        },
+        {
+          "name": "onThemeOptionSelected",
+          "description": "Handles the user's theme mode selection and updates the `ThemeService` accordingly.",
+          "parameters": [
+            "value: String"
+          ],
+          "return_type": null
+        }
+      ],
+      "dependencies": [
+        "package:flutter/material.dart",
+        "package:stacked/stacked.dart",
+        "package:dory/app/app.locator.dart",
+        "package:dory/services/theme_service.dart",
+        "package:dory/ui/common/app_colors.dart"
+      ]
+    },
+    {
+      "name": "lib/app/app.router.dart",
+      "description": "This file is responsible for managing the navigation and routing in the Flutter application. It defines the available routes, the corresponding views, and provides helper methods to navigate between these views.",
+      "class_diagram": "@startuml\n  class Routes {\n    + static const homeView: String\n    + static const startupView: String\n    + static const all: Set<String>\n  }\n\n  class StackedRouter extends RouterBase {\n    + List<RouteDef> get routes()\n    + Map<Type, StackedRouteFactory> get pagesMap()\n  }\n\n  class NavigatorStateExtension {\n    + Future<dynamic> navigateToHomeView()\n    + Future<dynamic> navigateToStartupView()\n    + Future<dynamic> replaceWithHomeView()\n    + Future<dynamic> replaceWithStartupView()\n  }\n  @enduml",
+      "methods": [
+        {
+          "name": "navigateToHomeView",
+          "description": "Navigates to the HomeView route.",
+          "parameters": [
+            "routerId",
+            "preventDuplicates",
+            "parameters",
+            "transition"
+          ],
+          "return_type": "Future<dynamic>"
+        },
+        {
+          "name": "navigateToStartupView",
+          "description": "Navigates to the StartupView route.",
+          "parameters": [
+            "routerId",
+            "preventDuplicates",
+            "parameters",
+            "transition"
+          ],
+          "return_type": "Future<dynamic>"
+        },
+        {
+          "name": "replaceWithHomeView",
+          "description": "Replaces the current view with the HomeView route.",
+          "parameters": [
+            "routerId",
+            "preventDuplicates",
+            "parameters",
+            "transition"
+          ],
+          "return_type": "Future<dynamic>"
+        },
+        {
+          "name": "replaceWithStartupView",
+          "description": "Replaces the current view with the StartupView route.",
+          "parameters": [
+            "routerId",
+            "preventDuplicates",
+            "parameters",
+            "transition"
+          ],
+          "return_type": "Future<dynamic>"
+        }
+      ],
+      "dependencies": [
+        "dory/features/home/home_view.dart",
+        "dory/features/startup/startup_view.dart",
+        "flutter/material.dart",
+        "stacked/stacked.dart",
+        "stacked_services/stacked_services.dart"
+      ]
+    },
+    {
+      "name": "lib/ui/animations/theme_transition.dart",
+      "description": "The ThemeTransition class is responsible for providing a smooth animation when transitioning between light and dark themes in a Flutter application. It serves as a wrapper around the AnimatedTheme and AnimatedContainer widgets, allowing for a seamless theme change experience.",
+      "class_diagram": "@startuml\nclass ThemeTransition {\n  +Widget child\n  +bool isDarkMode\n  +build(BuildContext context): Widget\n}\n@enduml",
+      "methods": [
+        {
+          "name": "build",
+          "description": "Builds the ThemeTransition widget, which wraps the child widget with an AnimatedTheme and AnimatedContainer to provide a smooth theme transition animation.",
+          "parameters": [
+            "BuildContext context"
+          ],
+          "return_type": "Widget"
+        }
+      ],
+      "dependencies": [
+        "package:flutter/material.dart"
+      ]
+    },
+    {
+      "name": "lib/ui/common/ui_helpers.dart",
+      "description": "This Dart file contains a set of utility functions and constants that provide common UI layout and styling helpers for the Flutter application. It serves as a centralized place to manage and apply consistent UI patterns across the codebase.",
+      "class_diagram": "@startuml\n\nclass UIHelpers {\n  +const Widget horizontalSpaceTiny\n  +const Widget horizontalSpaceSmall\n  +const Widget horizontalSpaceMedium\n  +const Widget horizontalSpaceLarge\n  +const Widget verticalSpaceTiny\n  +const Widget verticalSpaceSmall\n  +const Widget verticalSpaceMedium\n  +const Widget verticalSpaceLarge\n  +const Widget verticalSpaceMassive\n  +Widget spacedDivider\n  +Widget verticalSpace(double height)\n  +double screenWidth(BuildContext context)\n  +double screenHeight(BuildContext context)\n  +double screenHeightFraction(BuildContext context, {int dividedBy=1, double offsetBy=0, double max=3000})\n  +double screenWidthFraction(BuildContext context, {int dividedBy=1, double offsetBy=0, double max=3000})\n  +double halfScreenWidth(BuildContext context)\n  +double thirdScreenWidth(BuildContext context)\n  +double quarterScreenWidth(BuildContext context)\n  +double getResponsiveHorizontalSpaceMedium(BuildContext context)\n  +double getResponsiveSmallFontSize(BuildContext context)\n  +double getResponsiveMediumFontSize(BuildContext context)\n  +double getResponsiveLargeFontSize(BuildContext context)\n  +double getResponsiveExtraLargeFontSize(BuildContext context)\n  +double getResponsiveMassiveFontSize(BuildContext context)\n  +double getResponsiveFontSize(BuildContext context, {double? fontSize, double? max})\n}\n\n@enduml",
+      "methods": [
+        {
+          "name": "horizontalSpaceTiny",
+          "description": "A constant horizontal spacing widget with a width of 5 units.",
+          "parameters": null,
+          "return_type": "Widget"
+        },
+        {
+          "name": "screenWidth",
+          "description": "Returns the width of the screen in the current BuildContext.",
+          "parameters": [
+            "BuildContext context"
+          ],
+          "return_type": "double"
+        },
+        {
+          "name": "screenHeightFraction",
+          "description": "Returns a fraction of the screen height based on the provided parameters.",
+          "parameters": [
+            "BuildContext context",
+            "int dividedBy=1",
+            "double offsetBy=0",
+            "double max=3000"
+          ],
+          "return_type": "double"
+        },
+        {
+          "name": "getResponsiveFontSize",
+          "description": "Returns a responsive font size based on the screen width and the provided font size and max value.",
+          "parameters": [
+            "BuildContext context",
+            "double? fontSize",
+            "double? max"
+          ],
+          "return_type": "double"
+        }
+      ],
+      "dependencies": [
+        "dart:math",
+        "package:flutter/material.dart"
+      ]
+    },
+    {
+      "name": "lib/services/theme_service.dart",
+      "description": "The ThemeService class is responsible for managing the application's theme preferences, including the ability to switch between dark mode, light mode, system theme, and time-based themes. It handles the persistence of user preferences using SharedPreferences and provides a set of methods to set the desired theme.",
+      "class_diagram": "@startuml\nclass ThemeService {\n  - _isDarkMode: ReactiveValue<bool>\n  - _isSystemTheme: ReactiveValue<bool>\n  - _isTimeBasedTheme: ReactiveValue<bool>\n  + get isDarkMode(): bool\n  + get isSystemTheme(): bool\n  + get isTimeBasedTheme(): bool\n  + _loadThemePreference()\n  + setDarkMode(isDark: bool)\n  + setSystemTheme(useSystem: bool)\n  + setTimeBasedTheme(useTimeBased: bool)\n  + _updateTimeBasedTheme()\n  + updateThemeBasedOnSystem(brightness: Brightness)\n  + checkAndUpdateTimeBasedTheme()\n}\n@enduml",
+      "methods": [
+        {
+          "name": "_loadThemePreference",
+          "description": "Loads the user's theme preference from SharedPreferences and initializes the corresponding reactive values.",
+          "parameters": null,
+          "return_type": "Future<void>"
+        },
+        {
+          "name": "setDarkMode",
+          "description": "Sets the theme to dark mode, disables the system and time-based themes, and saves the preference to SharedPreferences.",
+          "parameters": [
+            "isDark: bool"
+          ],
+          "return_type": "Future<void>"
+        },
+        {
+          "name": "setSystemTheme",
+          "description": "Sets the theme to use the system's theme, disables the time-based theme, and saves the preference to SharedPreferences.",
+          "parameters": [
+            "useSystem: bool"
+          ],
+          "return_type": "Future<void>"
+        },
+        {
+          "name": "setTimeBasedTheme",
+          "description": "Sets the theme to use a time-based approach, disables the system theme, and saves the preference to SharedPreferences. It also updates the theme based on the current time of day.",
+          "parameters": [
+            "useTimeBased: bool"
+          ],
+          "return_type": "Future<void>"
+        },
+        {
+          "name": "_updateTimeBasedTheme",
+          "description": "Updates the theme based on the current time of day (dark mode between 6 PM and 6 AM).",
+          "parameters": null,
+          "return_type": "void"
+        },
+        {
+          "name": "updateThemeBasedOnSystem",
+          "description": "Updates the theme based on the system's current brightness setting (light or dark) if the system theme is enabled.",
+          "parameters": [
+            "brightness: Brightness"
+          ],
+          "return_type": "void"
+        },
+        {
+          "name": "checkAndUpdateTimeBasedTheme",
+          "description": "Checks if the time-based theme is enabled and updates the theme accordingly.",
+          "parameters": null,
+          "return_type": "void"
+        }
+      ],
+      "dependencies": [
+        "flutter/material.dart",
+        "stacked/stacked.dart",
+        "shared_preferences.dart"
+      ]
     }
   ],
   "dependencies": [
@@ -137,7 +571,7 @@
       "purpose": "Creating gaps in layouts"
     }
   ],
-  "sequence_diagram": "@startuml\nactor User\nparticipant main\nparticipant AppView\nparticipant StartupView\nparticipant StartupViewModel\nparticipant HomeView\nparticipant HomeViewModel\n\nUser -> main: Launch app\nmain -> AppView: Create and run\nAppView -> StartupView: Initialize\nStartupView -> StartupViewModel: Run startup logic\nStartupViewModel -> HomeView: Navigate on completion\nHomeView -> HomeViewModel: Initialize\nUser -> HomeView: Interact\nHomeView -> HomeViewModel: Handle user actions\nHomeViewModel -> HomeView: Update UI\nHomeViewModel -> DialogService: Show dialog\nHomeViewModel -> BottomSheetService: Show bottom sheet\n@enduml",
-  "state_management_flow": "State is managed using the Stacked architecture. ViewModels (e.g., HomeViewModel, StartupViewModel) handle the business logic and state for their respective views. The app.locator.dart file sets up dependency injection, while app.router.dart manages navigation between views.",
-  "navigation_flow": "The application starts with main.dart, which sets up the app and runs AppView. AppView initializes the Stacked architecture and shows the StartupView. After completing initialization logic, it navigates to the HomeView. Navigation between views is handled by the Stacked Router defined in app.router.dart."
+  "sequence_diagram": "@startuml\nactor User\nparticipant main\nparticipant AppView\nparticipant StartupView\nparticipant StartupViewModel\nparticipant HomeView\nparticipant HomeViewModel\n\nUser -> main: Launch app\nmain -> AppView: Create and run\nAppView -> StartupView: Initialize\nStartupView -> StartupViewModel: Run startup logic\nStartupViewModel -> HomeView: Navigate to home view\nHomeView -> HomeViewModel: Initialize\nUser -> HomeView: Interact (increment counter, show dialog, show bottom sheet)\nHomeView -> HomeViewModel: Handle user actions\nHomeViewModel -> HomeView: Update UI\nHomeViewModel -> DialogService: Show custom dialog\nHomeViewModel -> BottomSheetService: Show custom bottom sheet\n@enduml",
+  "state_management_flow": "The Stacked architecture is used for state management in this application. ViewModels (e.g., HomeViewModel, StartupViewModel) are responsible for managing the state and business logic for their respective views. The ViewModels use reactive programming techniques provided by the Stacked library to expose state changes and handle user interactions. The app.locator.dart file sets up the dependency injection, allowing the ViewModels to access the necessary services (DialogService, BottomSheetService, NavigationService) to handle cross-cutting concerns.",
+  "navigation_flow": "The application's navigation is implemented using the Stacked Router, which is defined in the app.router.dart file. The main entry point is the AppView, which initializes the Stacked architecture and shows the StartupView. After completing the startup logic, the StartupViewModel navigates to the HomeView. User interactions within the HomeView, such as button clicks, can trigger navigation to custom dialogs or bottom sheets, which are managed by the respective services registered with the Stacked architecture."
 }

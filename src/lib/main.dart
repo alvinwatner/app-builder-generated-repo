@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:dory/app/app.bottomsheets.dart';
 import 'package:dory/app/app.dialogs.dart';
 import 'package:dory/app/app.locator.dart';
-
-import 'features/app/app_view.dart';
+import 'package:dory/services/theme_service.dart';
+import 'package:dory/features/app/app_view.dart';
 
 void main() async {
   await runZonedGuarded(() async {
@@ -19,11 +19,13 @@ void main() async {
     setupDialogUi();
     setupBottomSheetUi();
 
+    final themeService = locator<ThemeService>();
+    await Future.delayed(const Duration(milliseconds: 100));
+    themeService.checkAndUpdateTimeBasedTheme();
+
     runApp(const AppView());
   }, (exception, stackTrace) async {
-    // Handle exceptions here
     print('Caught error: $exception');
     print('Stack trace: $stackTrace');
-    // You might want to log this to a service or show a user-friendly error message
   });
 }
